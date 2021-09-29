@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Route to Mt. Timpanogos Summit</title>
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=no"
+    />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Noto+Sans"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css?family=Lora"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        background: "whitesmoke";
+        font-family: "Noto Sans", sans-serif;
+        color: #3d3d3d;
+      }
+
+      h1 {
+        position: absolute;
+        margin-top: 0;
+        color: whitesmoke;
+        top: 10px;
+        left: 45px;
+        width: 400px;
+        font-size: 2em;
+        font-family: "Lora", serif;
+        letter-spacing: 0.05em;
+        padding: 10px 15px;
+        background: #212b31;
+        border: 2px solid whitesmoke;
+        border-radius: 3px;
+        z-index: 800;
+      }
+
+      h2 {
+        font-family: "Lora", serif;
+        letter-spacing: 0.04em;
+        color: whitesmoke;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+        height: 100%;
+      }
+
+      section {
+        position: absolute;
+        bottom: 0;
+        right: 10px;
+        height: 575px;
+        width: 200px;
+        margin: 20px auto;
+        padding: 0 20px;
+        background: #212b31;
+        border: 2px solid whitesmoke;
+        border-radius: 3px;
+        z-index: 1000;
+        text-align: left;
+      }
+
+      p.infoBox {
+        font-size: 0.8em;
+        line-height: 1.5em;
+        color: whitesmoke;
+        text-align: left;
+      }
+
+      p.author {
+        font-size: 0.6em;
+        line-height: 1.5em;
+        color: whitesmoke;
+        font-style: italic;
+        text-align: right;
+      }
+
+      p.sources {
+        font-size: 0.6em;
+        line-height: 1.5em;
+        color: whitesmoke;
+        font-style: italic;
+        text-align: right;
+      }
+
+      a {
+        color: whitesmoke;
+        text-decoration: none;
+      }
+
+      a:hover {
+        color: #005daa;
+        text-decoration: underline;
+      }
+      .leaflet-popup img {
+        max-width: 400px;
+        max-height: 200px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Mount Timpanogos via the Timpooneke Trail</h1>
+
+    <div id="map"></div>
+
+    <section>
+      <h2>A Pilgrimage to Great Heights</h2>
+
+      <p class="infoBox">
+        This July, my girlfriend Taylor and I journeyed to the top of Mt.
+        Timpanogos in hopes that we could see the sunrise from the heavens. We
+        ended up watching the sunrise from the saddle, which made the 2:30 am
+        wake up call
+        <b>well</b> worth it. <br /><br />
+        If you're looking for a challenging hike, this is the one for you. Take
+        in awe-inspiring views as you climb nearly 4,500 feet in 7.5 miles, one
+        way!
+      </p>
+
+      <p class="infoBox">
+        Mount Timpanogos is one of Utah’s most recognizable mountains. Towering
+        11,749 feet into the sky, it's the second-highest summit of the Wasatch
+        Mountains (behind only Mt. Nebo).
+      </p>
+
+      <p class="sources">
+        Information source:
+        <a href="https://utah.com/hiking/mt-timpanogos">Utah.com</a>
+      </p>
+      <p class="author">Map authored by Chip Weir</p>
+    </section>
+
+    <script src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
+    <script src="data/route.js"></script>
+
+    <script>
+      //options to be used when creating the map
+      var options = {
+        center: [40.414, -111.64179321526145],
+        zoom: 13.5,
+      };
+
+      //creation of the Leaflet map
+      var map = L.map("map", options);
+
+      //request to load basemap
+      var Esri_WorldTopoMap = L.tileLayer(
+        "https://{s}.tile.jawg.io/jawg-terrain/{z}/{x}/{y}{r}.png?access-token={accessToken}",
+        {
+          attribution:
+            '<a href="http://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          minZoom: 0,
+          maxZoom: 22,
+          subdomains: "abcd",
+          accessToken:
+            "ihDe2jNzbuwI58KsogUop26M52pHfsT5hT0QH9hda7gwdeSNAMogAE6SD4sqASGm",
+        }
+      ).addTo(map);
+
+      /*string content to be inserted into a tooltip
+            var message = "Beacon Heights!";
+
+            //create a Leaflet marker, centered on the map's center.
+            L.marker(map.getCenter())
+              .bindTooltip(message) //bind the tooltip and message to the marker
+              .addTo(map) // add the marker to the map`
+              .openTooltip(); // open the tooltip
+              */
+
+      var myRoute = L.geoJSON(info, {
+        filter: function (feature) {
+          if (feature.geometry.type == "LineString") {
+            return feature;
+          }
+        },
+
+        style: function (feature) {
+          return {
+            color: "#212b31",
+            weight: 3,
+            opacity: 1,
+          };
+        },
+      }).addTo(map);
+
+      var myMarker = L.geoJSON(info, {
+        filter: function (feature) {
+          if (feature.geometry.type == "Point") {
+            return feature;
+          }
+        },
+        onEachFeature: function (feature, layer) {
+          layer.bindPopup(
+            "<h3>" +
+              feature.properties.name +
+              "</h3><p>" +
+              feature.properties.text +
+              "</p>" +
+              "<img src='" +
+              feature.properties.img +
+              "'/>",
+            {
+              maxWidth: "auto",
+            }
+          );
+        },
+      }).addTo(map);
+
+      //map.fitBounds(myRoute.getBounds());
+    </script>
+  </body>
+</html>
