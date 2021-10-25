@@ -1286,7 +1286,7 @@ var info = {
         "marker-symbol": "",
         name: "The Saddle",
         text: "Almost to the peak!",
-        img: "./imgs/saddleSelfie.jpg",
+        img: "./imgs/saddleSelfie.JPG",
       },
       geometry: { type: "Point", coordinates: [-111.655, 40.3966] },
     },
